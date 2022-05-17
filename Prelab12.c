@@ -30,8 +30,10 @@
 
 #define _XTAL_FREQ 4000000
 
+//
+uint8_t flag = 0;
 
- 
+ //Prototipo de funciones 
 void setup(void);
 
 
@@ -46,11 +48,11 @@ void __interrupt() isr (void){
         PIR1bits.ADIF = 0;          // Limpiamos bandera de interrupción
     }
     
+ 
     if(INTCONbits.RBIF){                // Fue interrupci n del PORTB?
             
         if (!PORTBbits.RB0){
-           __delay_ms(100);
-        
+            flag = 0;
         }
            INTCONbits.RBIF = 0;
         
@@ -70,9 +72,14 @@ void main(void) {
             ADCON0bits.GO = 1;              // Iniciamos proceso de conversión
         }
         if (!PORTBbits.RB1){
-            SLEEP();
+            flag = 1;
         }
-       
+        
+        
+        
+        while (flag == 1){
+        SLEEP();
+        }
         
         //LED PORTD para ver funcionamiento
         PORTDbits.RD0 = 1;
@@ -98,6 +105,8 @@ void setup(void){
     
     TRISD = 0;
     PORTD = 0;
+    
+    
     
     
     // Configuración reloj interno
@@ -129,7 +138,7 @@ void setup(void){
     WPUBbits.WPUB0 = 1;         // Habilitamos resistencia de pull-up de RB0
     WPUBbits.WPUB1 = 1;         // Habilitamos resistencia de pull-up de RB1
     IOCBbits.IOCB0 = 1;         // Habilitamos interrupcion por cambio de estado ?para RB0
-    IOCBbits.IOCB1 = 1;         // Habilitamos interrupcion por cambio de estado ?para RB1
+    IOCBbits.IOCB1 = 0;         // Habilitamos interrupcion por cambio de estado ?para RB1
     INTCONbits.RBIF = 0;        // Limpiamos bandera de interrupcion
 
     
