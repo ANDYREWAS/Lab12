@@ -66,6 +66,7 @@ void __interrupt() isr (void){
             INTCONbits.RBIF = 0;
         }
         if (PORTBbits.RB2 == 0){
+            flag = 0;
             write_EEPROM(address, potenciometro);
             INTCONbits.RBIF = 0;
         }
